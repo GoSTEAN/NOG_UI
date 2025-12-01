@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.jsx
+import React, {useEffect} from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./components/Home";
+import VipChecker from "./components/checker";
+import AdminLogin from "./components/admin/AdminLogin";
+import AdminRegister from "./components/admin/AdminRegister";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import { useAuthStore } from "./store/useAuthStore"; 
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+export default function App() {
+ const initToken = useAuthStore((state) => state.initToken);
+  const token = useAuthStore((state) => state.token);
+
+
+  useEffect(() => {
+    initToken();
+  }, []);
+
+return (
+<Router>
+          <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/checker" element={<VipChecker />} />
+
+             {/* Admin */}
+        <Route
+          path="/admin"
+          element={token ? <Navigate to="/admin/dashboard" /> : <Navigate to="/admin/login" />}
+        />
+
+     <Route
+          path="/admin/register"
+          element={token ? <Navigate to="/admin/dashboard" /> : <AdminRegister />}
+        />
+
+        <Route
+          path="/admin/login"
+          element={token ? <Navigate to="/admin/dashboard" /> : <AdminLogin />}
+        />
+
+        <Route
+          path="/admin/dashboard"
+          element={token ? <AdminDashboard /> : <Navigate to="/admin/login" />}
+        />
+
+     </Routes>
+</Router>
+);
 }
-
-export default App;
