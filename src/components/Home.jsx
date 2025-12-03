@@ -77,12 +77,12 @@ export default function Home() {
           Check VIP Status
         </Link>
 
-          <Link
+          {/* <Link
           to="/admin"
           className="bg-cyan-400 ml-2 text-gray-900 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-cyan-500 transition"
         >
           Admin
-        </Link>
+        </Link> */}
       </section>
 
       {/* Footer */}

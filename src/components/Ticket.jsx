@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect , useCallback} from "react";
 
 export default function Ticket({ name }) {
   const canvasRef = useRef();
@@ -103,7 +103,7 @@ export default function Ticket({ name }) {
     ctx.lineWidth = 4;
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
   
- }, []); 
+ }, [name]); 
 
 
   useEffect(() => {
