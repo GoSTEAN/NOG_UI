@@ -29,6 +29,14 @@ export default function Home() {
           >
             Check VIP Status
           </Link>
+          {/* register */}
+            <Link
+            to="/register"
+            className="bg-cyan-400 ml-4 text-gray-900 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-cyan-500 transition"
+          >
+            Register
+          </Link>
+
         </div>
         <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center z-10">
           <img
@@ -76,6 +84,13 @@ export default function Home() {
         >
           Check VIP Status
         </Link>
+
+  <Link
+            to="/register"
+            className="bg-cyan-400 ml-4 text-gray-900 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-cyan-500 transition"
+          >
+            Register
+          </Link>
 
           {/* <Link
           to="/admin"

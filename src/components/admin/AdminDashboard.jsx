@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useAdminStore } from "../../store/useAdminStore";
 import { useAuthStore } from "../../store/useAuthStore.js";
+import useApplicantsStore from "../../store/useApplicantsStore";
+import vipList from "./VipList";
+import applicantsList from "./Applicants";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
@@ -14,10 +17,19 @@ export default function AdminDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [activeTab, setActiveTab] = useState('vips');
+
+  const { applicants, loading: loadingApplicants, error: applicantsError, getApplicants, deleteApplicant } = useApplicantsStore();
 
   useEffect(() => {
     getAllVips();
   }, [getAllVips]);
+
+  useEffect(() => {
+    if (activeTab === 'applicants') {
+      getApplicants();
+    }
+  }, [activeTab, getApplicants]);
 
   const handleAddVip = async (e) => {
     e.preventDefault();
@@ -98,110 +110,39 @@ const handleDeleteVip = async (_id) => {
       {/* Message */}
             {msg && (
                   <div className="max-w-xl mx-auto mb-6 text-center">
-                    <p className="text-white bg-opacity-80 text-gray-900 py-3 px-6 rounded-lg shadow-md text-sm font-semibold">
+                    <p className="text-white bg-opacity-80 py-3 px-6 rounded-lg shadow-md text-sm font-semibold">
                       {msg}
                     </p>
                   </div>
                 )}
 
-      {/* Add VIP Button */}
+      {/* Tabs */}
       <div className="flex justify-center mb-6">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-bold px-8 py-3 rounded-xl shadow-lg text-lg transition"
-        >
-          Add New VIP
-        </button>
+        <div className="inline-flex bg-white/10 rounded-lg p-1">
+          <button
+            onClick={() => setActiveTab('vips')}
+            className={`px-6 py-2 rounded-md font-semibold transition ${activeTab === 'vips' ? 'bg-cyan-500 text-gray-900' : 'text-white/90'}`}
+          >
+            VIPs
+          </button>
+          <button
+            onClick={() => setActiveTab('applicants')}
+            className={`px-6 py-2 rounded-md font-semibold transition ${activeTab === 'applicants' ? 'bg-cyan-500 text-gray-900' : 'text-white/90'}`}
+          >
+            Applicants
+          </button>
+        </div>
       </div>
 
-      {/* VIP List */}
-      <div className="max-w-5xl mx-auto bg-white bg-opacity-40 backdrop-blur-lg p-8 rounded-2xl shadow-xl">
-        <h2 className="text-2xl font-bold text-cyan-300 mb-6 text-center">
-          VIP List
-        </h2>
 
-        {/* {loading ? (
-          <p className="text-center text-gray-300 text-lg">Loading...</p>
-        ) : vips.length === 0 ? (
-          <p className="text-center text-gray-300 text-lg">No VIPs found.</p>
-        ) : (
-          <ul className="space-y-4">
-            {vips?.map((vip) => (
-              <li
-                key={vip?.id}
-                className="flex justify-between bg-blue-800 bg-opacity-70 p-4 rounded-xl items-center shadow-md hover:bg-blue-700 transition"
-              >
-                <span className="font-semibold text-white text-lg">
-                  {vip.fullName}
-                </span>
+      {/* Content: VIP list or Applicants list */}
+      <div>
 
-                <button
-                  onClick={() => handleDeleteVip(vip.id)}
-                  className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg shadow-lg transition text-white font-semibold"
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        )} */}
-
-          {loadList ? (
-            <p className="text-center text-gray-300 text-lg">Loading...</p>
-          ) : error ? (
-            <p className="text-center text-red-400 text-lg">{error}</p>
-          ) : vips.length === 0 ? (
-            <p className="text-center text-gray-300 text-lg">No VIPs found.</p>
-          ) : (
-            <ul className="space-y-4">
-              {vips?.map((vip, index) => (
-                <li
-                  key={vip?.id}
-                  className="flex justify-between bg-blue-800 bg-opacity-70 p-4 rounded-xl items-center shadow-md hover:bg-blue-700 transition"
-                >
-                  <span className="font-semibold text-white text-lg">
-                     {index + 1}. {vip.name}
-                  </span>
-
-                  <button
-                    onClick={() => handleDeleteVip(vip._id)}
-                    className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg shadow-lg transition text-white font-semibold flex items-center justify-center space-x-2"
-                  >
-                    {deletingId === vip._id ? (
-                      <>
-                        <svg
-                          className="animate-spin h-5 w-5 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                          />
-                        </svg>
-                        <span>Please wait...</span>
-                      </>
-                    ) : (
-                      <span>Delete VIP</span>
-                    )}
-                  </button>
-
-                </li>
-              ))}
-            </ul>
-          )}
-
+        {(() => {
+          const VipComponent = vipList;
+          const ApplicantsComponent = applicantsList;
+          return activeTab === 'vips' ? <VipComponent /> : <ApplicantsComponent />;
+        })()}
       </div>
 
       {/* Modal */}
@@ -267,7 +208,7 @@ const handleDeleteVip = async (_id) => {
 
                  {msg && (
                   <div className="max-w-xl mx-auto mb-6 text-center">
-                    <p className="text-white bg-opacity-80 text-gray-900 py-3 px-6 rounded-lg shadow-md text-sm font-semibold">
+                    <p className="text-white bg-opacity-80 py-3 px-6 rounded-lg shadow-md text-sm font-semibold">
                       {msg}
                     </p>
                   </div>

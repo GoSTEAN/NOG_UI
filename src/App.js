@@ -3,6 +3,7 @@ import React, {useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import VipChecker from "./components/checker";
+import UserRegisteration from "./components/userRegisteration";
 import AdminLogin from "./components/admin/AdminLogin";
 import AdminRegister from "./components/admin/AdminRegister";
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -18,11 +19,15 @@ export default function App() {
     initToken();
   }, [initToken]);
 
+  // UserRegisteration
 return (
 <Router>
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/checker" element={<VipChecker />} />
+          <Route path="/register" element={<UserRegisteration />} />
+
+
 
              {/* Admin */}
         <Route
