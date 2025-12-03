@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { useAuthStore } from "./useAuthStore";
 
-const API = "https://nog-484t.onrender.com";
+const API = "https://nogbackend-production.up.railway.app";
 
 export const useAdminStore = create((set, get) => ({
   vips: [],

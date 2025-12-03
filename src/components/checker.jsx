@@ -31,7 +31,7 @@ const handleSubmit = async (e) => {
 
   try {
     const response = await fetch(
-      `https://nog-484t.onrender.com/api/vip/search?query=${encodeURIComponent(name)}`
+      `https://nogbackend-production.up.railway.app/api/vip/search?query=${encodeURIComponent(name)}`
     );
 
     let data;

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const API = "https://nog-484t.onrender.com";
+const API = "https://nogbackend-production.up.railway.app";
 
 export const useAuthStore = create((set) => ({
   token: null,
