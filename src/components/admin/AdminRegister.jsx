@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import background from "../../assets/nog.jpeg";
 import { useAuthStore } from "../../store/useAuthStore";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
