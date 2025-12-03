@@ -54,7 +54,7 @@ export default function Ticket({ name }) {
   // Automatically generate ticket when name changes
   useEffect(() => {
     if (name) generateTicket();
-  }, [name]);
+  }, [name, generateTicket]);
 
   const downloadTicket = () => {
   const canvas = canvasRef.current;

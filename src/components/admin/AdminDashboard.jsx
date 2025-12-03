@@ -17,7 +17,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     getAllVips();
-  }, []);
+  }, [getAllVips]);
 
   const handleAddVip = async (e) => {
     e.preventDefault();

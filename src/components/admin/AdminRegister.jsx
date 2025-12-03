@@ -7,7 +7,6 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export default function AdminRegister() {
  const register = useAuthStore((s) => s.register);
-  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");

@@ -16,7 +16,7 @@ export default function App() {
 
   useEffect(() => {
     initToken();
-  }, []);
+  }, [initToken]);
 
 return (
 <Router>
