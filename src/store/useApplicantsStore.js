@@ -1,3 +1,4 @@
+// src/store/useApplicantsStore.js
 import { create } from 'zustand'
 
 const API = 'https://nogbackend-production.up.railway.app'
@@ -15,7 +16,7 @@ export const useApplicantsStore = create((set, get) => ({
   loading: false,
   error: null,
 
-  // Fetch applicants (admin endpoint). opts.query can be an object for querystring
+  // Fetch applicants
   getApplicants: async (opts = {}) => {
     const token = localStorage.getItem('adminToken')
     set({ loading: true, error: null })
@@ -31,7 +32,8 @@ export const useApplicantsStore = create((set, get) => ({
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
 
-      const data = await safeJson(res)      
+      const data = await safeJson(res)
+
       if (!res.ok) {
         const message = data?.message || 'Failed to load applicants'
         set({ applicants: [], loading: false, error: message })
@@ -48,21 +50,92 @@ export const useApplicantsStore = create((set, get) => ({
     }
   },
 
+  // APPROVE Applicant
+  approveApplicant: async (id) => {
+    const token = localStorage.getItem('adminToken')
+    if (!id) return { success: false, message: 'Missing applicant ID' }
 
+    try {
+      const res = await fetch(`${API}/api/applicant/applications/${id}/approve`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
 
-  // Optional: delete an applicant by id (admin)
+      const data = await safeJson(res)
+
+      if (!res.ok) {
+        return { success: false, message: data?.message || 'Failed to approve' }
+      }
+
+      // Optimistic UI update
+      set((state) => ({
+        applicants: state.applicants.map((a) =>
+          (a._id === id || a.id === id) ? { ...a, status: 'approved' } : a
+        ),
+      }))
+
+      return { success: true, message: data?.message || 'Approved successfully' }
+    } catch (err) {
+      return { success: false, message: err?.message || 'Network error' }
+    }
+  },
+
+  // REJECT Applicant
+  rejectApplicant: async (id) => {
+    const token = localStorage.getItem('adminToken')
+    if (!id) return { success: false, message: 'Missing applicant ID' }
+
+    try {
+      const res = await fetch(`${API}/api/applicant/applications/${id}/reject`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await safeJson(res)
+
+      if (!res.ok) {
+        return { success: false, message: data?.message || 'Failed to reject' }
+      }
+
+      // Optimistic UI update
+      set((state) => ({
+        applicants: state.applicants.map((a) =>
+          (a._id === id || a.id === id) ? { ...a, status: 'rejected' } : a
+        ),
+      }))
+
+      return { success: true, message: data?.message || 'Rejected' }
+    } catch (err) {
+      return { success: false, message: err?.message || 'Network error' }
+    }
+  },
+
+  // Optional: delete applicant (you already had this)
   deleteApplicant: async (id) => {
     const token = localStorage.getItem('adminToken')
     if (!id) return { success: false, message: 'Missing id' }
+
     try {
       const res = await fetch(`${API}/api/admin/applicants/${id}`, {
         method: 'DELETE',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers: { Authorization: `Bearer ${token}` },
       })
-      const data = await safeJson(res)
-      if (!res.ok) return { success: false, message: data?.message || 'Delete failed' }
-      // remove locally
-      set((state) => ({ applicants: state.applicants.filter((a) => a._id !== id && a.id !== id) }))
+
+      if (!res.ok) {
+        const data = await safeJson(res)
+        return { success: false, message: data?.message || 'Delete failed' }
+      }
+
+      set((state) => ({
+        applicants: state.applicants.filter((a) => a._id !== id && a.id !== id),
+      }))
+
       return { success: true }
     } catch (err) {
       return { success: false, message: err?.message || 'Network error' }
